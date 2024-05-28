@@ -22,14 +22,13 @@ jobs:
         run: ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 "echo 'SSH connection successful'"
 
       - name: Deploy code
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 '
+          export NODE_OPTIONS=--openssl-legacy-provider &&
           git config --global --add safe.directory /var/www/seesvee &&
-          cd /var/www/seesvee && 
+          cd /var/www/seesvee &&
           git pull &&
           npm install &&
-          npm run build && 
+          npm run build &&
           pm2 restart server
           '
