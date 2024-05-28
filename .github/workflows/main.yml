@@ -24,6 +24,7 @@ jobs:
       - name: Deploy code
         run: |
           ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 '
+          git config --global --add safe.directory /var/www/seesvee &&
           cd /var/www/seesvee && 
           git pull &&
           npm install &&
