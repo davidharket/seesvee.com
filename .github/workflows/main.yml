@@ -1,4 +1,4 @@
-name: Deploy to VM
+name: Deploy to Server
 
 on:
   push:
@@ -22,6 +22,8 @@ jobs:
         run: ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 "echo 'SSH connection successful'"
 
       - name: Deploy code
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 '
           export NODE_OPTIONS=--openssl-legacy-provider &&
@@ -30,5 +32,7 @@ jobs:
           git pull &&
           npm install &&
           npm run build &&
-          pm2 restart server
+          pm2 stop seesvee-backend || true &&
+          pm2 delete seesvee-backend || true &&
+          pm2 start server.js --name seesvee-backend
           '
