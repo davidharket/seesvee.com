@@ -26,7 +26,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 '
           cd /var/www/seesvee && 
           git pull &&
-          npm install && 
+          npm install &&
           npm run build && 
           pm2 restart server
           '
