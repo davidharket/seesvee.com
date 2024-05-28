@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Serve static files from the React app
+// Serve static files from the React app and more!
 app.use(express.static(path.join(__dirname, 'build')));
 
 // API routes
