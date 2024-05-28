@@ -7,8 +7,7 @@
     "build": "your-build-command"
   },
   "dependencies": {
-    // Adddependencies here:
-    // "express": "^4.17.1",
-    // "react": "^17.0.2"
+    "express": "^4.17.1",
+    "react": "^17.0.2"
   }
 }
