@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "your-build-command" // Add this line with the appropriate build command
+    "build": "react-scripts build"
   },
   "dependencies": {
     // your dependencies
