@@ -11,22 +11,21 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # Updated to v3
+        uses: actions/checkout@v3
 
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.7.0 # Updated to v0.7.0
+        uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Test SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no ziprnorge@<your-vm-ip> "echo 'SSH connection successful'"
+        run: ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 "echo 'SSH connection successful'"
 
       - name: Deploy code
         run: |
           ssh -o StrictHostKeyChecking=no ziprnorge@35.190.205.208 '
           cd /var/www/seesvee && 
-          git pull && 
+          git pull &&
           npm install && 
           npm run build && 
           pm2 restart server
