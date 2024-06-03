@@ -1,13 +1,18 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import Navbar from "./components/Header/Navbar";
+import AllRoutes from "./routes/AllRoutes";
+import '../src/assets/fonts/fonts.css'
+import "./App.scss";
+import Footer from "./pages/Footer/Footer";
 
 function App() {
   return (
-    <div style={{ backgroundColor: 'white', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <h1>Best of luck!</h1>
-    </div>
+    <>
+      <Navbar />
+      <AllRoutes />
+      <Footer />
+    </>
   );
 }
 
 export default App;
-

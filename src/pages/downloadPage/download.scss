@@ -1,0 +1,58 @@
+.cardModule {
+  padding: 90px 0;
+  @media only screen and (max-width: 991px) {
+    padding: 60px 0;
+  }
+  &__box {
+    background: #f2f2f2 0% 0% no-repeat padding-box;
+    border-radius: 30px;
+    padding: 125px 80px;
+    max-width: 896px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    @media only screen and (max-width: 991px) {
+      padding: 80px 30px;
+    }
+    &-img {
+      width: 158px;
+      height: 163px;
+      object-fit: contain;
+      margin-bottom: 68px;
+      @media only screen and (max-width: 767px) {
+        margin-bottom: 40px;
+      }
+    }
+    &-title {
+      font: normal normal 600 40px/48px Bricolage Grotesque;
+      letter-spacing: 0px;
+      color: #000000;
+      margin: 0 0 20px;
+      @media only screen and (max-width: 767px) {
+        font-size: 30px;
+        line-height: 38px;
+      }
+    }
+    p {
+      font-size: 25px;
+      line-height: 30px;
+      letter-spacing: 0px;
+      color: #000000;
+      margin: 0;
+      @media only screen and (max-width: 991px) {
+        font-size: 22px;
+        line-height: 28px;
+      }
+      @media only screen and (max-width: 991px) {
+        font-size: 18px;
+        line-height: 25px;
+      }
+    }
+    .btnGreen {
+      margin: 70px 0 30px;
+      @media only screen and (max-width: 767px) {
+        margin: 40px 0 16px;
+      }
+    }
+  }
+}

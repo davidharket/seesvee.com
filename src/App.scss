@@ -1,0 +1,54 @@
+* {
+  box-sizing: border-box;
+  transition: all 0.5s ease;
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-family: "neue_regradelight";
+  & > iframe {
+    display: none;
+  }
+}
+
+.pageContainer {
+  max-width: 1640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+
+.btnGreen {
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  background: #66c166;
+  border: 5px solid #66c166;
+  border-radius: 20px;
+  font: normal normal 600 25px / 30px Bricolage Grotesque;
+  letter-spacing: 0px;
+  @media only screen and (max-width: 991px) {
+    font: normal normal 600 20px / 30px Bricolage Grotesque;
+    padding: 12px 30px;
+  }
+  @media only screen and (max-width: 767px) {
+    font: normal normal 600 18px / 30px Bricolage Grotesque;
+    padding: 8px 25px;
+  }
+  &:hover {
+    background-color: #fff;
+    color: #4caf50;
+  }
+}

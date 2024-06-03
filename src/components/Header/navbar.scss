@@ -1,0 +1,28 @@
+.mainHeader {
+  // min-height: 129px;
+  padding: 45px 0 30px;
+  background: #66c166;
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  &__logo {
+    font: normal normal bold 45px/54px Bricolage Grotesque 36pt 36pt;
+    letter-spacing: 0px;
+    color: #ffffff;
+  }
+  &__menu {
+    display: flex;
+    align-items: center;
+    gap: 78px;
+    a {
+      text-decoration: underline;
+      font: normal normal normal 25px/30px Neue Regrade;
+      letter-spacing: 0px;
+      color: #ffffff;
+      font-family: 'neue_regradelight';
+    }
+  }
+}

@@ -1,0 +1,122 @@
+.mainFooter {
+  background-color: #6ec35e;
+  padding: 50px 0 32px;
+  @media only screen and (max-width: 991px) {
+    padding: 40px 0;
+  }
+  @media only screen and (max-width: 767px) {
+    text-align: center;
+  }
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: flex-end;
+    @media only screen and (max-width: 767px) {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  &__logo {
+    font-size: 25px;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #ffffff;
+    margin: 0;
+    @media only screen and (max-width: 991px) {
+      font-size: 22px;
+      line-height: 28px;
+    }
+    @media only screen and (max-width: 991px) {
+      font-size: 18px;
+      line-height: 25px;
+    }
+  }
+  &__mail {
+    font-size: 25px;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #ffffff;
+    display: block;
+    @media only screen and (max-width: 991px) {
+      font-size: 22px;
+      line-height: 28px;
+    }
+    @media only screen and (max-width: 991px) {
+      font-size: 18px;
+      line-height: 25px;
+    }
+  }
+  &__link {
+    text-decoration: underline;
+    font-size: 25px;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #ffffff;
+    display: block;
+    @media only screen and (max-width: 991px) {
+      font-size: 22px;
+      line-height: 28px;
+    }
+    @media only screen and (max-width: 991px) {
+      font-size: 18px;
+      line-height: 25px;
+    }
+  }
+  &__text {
+    p {
+      font-size: 25px;
+      line-height: 30px;
+      letter-spacing: 0px;
+      color: #ffffff;
+      text-align: center;
+      margin: 0;
+      @media only screen and (max-width: 991px) {
+        font-size: 22px;
+        line-height: 28px;
+      }
+      @media only screen and (max-width: 991px) {
+        font-size: 18px;
+        line-height: 25px;
+      }
+      .link {
+        text-decoration: underline;
+      }
+    }
+  }
+  &__menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 79px;
+    @media only screen and (max-width: 1200px) {
+      gap: 60px;
+    }
+    @media only screen and (max-width: 991px) {
+      gap: 40px;
+    }
+    @media only screen and (max-width: 767px) {
+        justify-content: center;
+    }
+    a {
+      text-decoration: underline;
+      font-size: 25px;
+      line-height: 30px;
+      letter-spacing: 0px;
+      color: #ffffff;
+      @media only screen and (max-width: 991px) {
+        font-size: 22px;
+        line-height: 28px;
+      }
+      @media only screen and (max-width: 991px) {
+        font-size: 18px;
+        line-height: 25px;
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+.uploadBlock {
+  min-height: calc(100vh - 105px);
+  display: flex;
+  align-items: center;
+  padding: 120px 0;
+  @media only screen and (max-width: 991px) {
+    padding: 75px 0;
+  }
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    @media only screen and (max-width: 991px) {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+  &__img {
+    max-width: 408px;
+    height: 490px;
+    margin-left: auto;
+    @media only screen and (max-width: 991px) {
+      margin: 0 auto;
+      height: auto;
+    }
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
+  }
+  &__title {
+    font: normal normal 600 80px/96px Bricolage Grotesque;
+    letter-spacing: 0px;
+    color: #000000;
+    margin: 0 0 15px;
+    @media only screen and (max-width: 991px) {
+      font: normal normal 600 60px/75px Bricolage Grotesque;
+    }
+    @media only screen and (max-width: 991px) {
+      font: normal normal 600 50px/65px Bricolage Grotesque;
+    }
+  }
+  &__content {
+    p {
+      font-size: 25px;
+      line-height: 30px;
+      letter-spacing: 0px;
+      color: #000000;
+      margin: 0 0 60px;
+      @media only screen and (max-width: 991px) {
+        font-size: 22px;
+        line-height: 28px;
+        margin: 0 0 40px;
+      }
+      @media only screen and (max-width: 991px) {
+        font-size: 18px;
+        line-height: 25px;
+      }
+    }
+  }
+}
