@@ -82,3 +82,11 @@
     font-style: normal;
 
 }
+@font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('BricolageGrotesque-SemiBold.woff2') format('woff2'),
+         url('BricolageGrotesque-SemiBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}

@@ -4,7 +4,7 @@
   align-items: center;
   padding: 120px 0;
   @media only screen and (max-width: 991px) {
-    padding: 75px 0;
+    padding: 65px 0;
   }
   &__inner {
     display: grid;
@@ -55,7 +55,7 @@
         line-height: 28px;
         margin: 0 0 40px;
       }
-      @media only screen and (max-width: 991px) {
+      @media only screen and (max-width: 767px) {
         font-size: 18px;
         line-height: 25px;
       }

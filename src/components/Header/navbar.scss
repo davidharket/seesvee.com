@@ -2,6 +2,10 @@
   // min-height: 129px;
   padding: 45px 0 30px;
   background: #66c166;
+  @media only screen and (max-width: 991px) {
+    padding: 18px 0;
+    position: relative;
+  }
   &__inner {
     display: flex;
     align-items: center;
@@ -9,20 +13,69 @@
     gap: 12px;
   }
   &__logo {
-    font: normal normal bold 45px/54px Bricolage Grotesque 36pt 36pt;
+    font: normal normal bold 45px/54px Bricolage Grotesque;
     letter-spacing: 0px;
     color: #ffffff;
+    @media only screen and (max-width: 991px) {
+      font: normal normal bold 30px/40px Bricolage Grotesque;
+    }
+  }
+  &__menuBtn {
+    height: 32px;
+    width: 32px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    @media only screen and (max-width: 991px) {
+      display: flex;
+    }
+    svg {
+      height: 18px;
+      width: 18px;
+      path {
+        fill: #fff;
+      }
+    }
   }
   &__menu {
     display: flex;
     align-items: center;
     gap: 78px;
+    @media only screen and (max-width: 991px) {
+      position: absolute;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px;
+      top: 100%;
+      background: #85d185;
+      border-top: 1px solid #fff;
+      gap: 25px;
+      z-index: 1;
+      display: none;
+    }
     a {
       text-decoration: underline;
       font: normal normal normal 25px/30px Neue Regrade;
       letter-spacing: 0px;
       color: #ffffff;
-      font-family: 'neue_regradelight';
+      font-family: "neue_regradelight";
+      @media only screen and (max-width: 991px) {
+        font-size: 22px;
+        line-height: 28px;
+      }
+      @media only screen and (max-width: 767px) {
+        font-size: 18px;
+        line-height: 25px;
+      }
     }
+  }
+  &.avtiveMenu .mainHeader__menu {
+    display: flex;
   }
 }

@@ -124,6 +124,10 @@ const UploadFile = () => {
     }
   };
 
+  useEffect(() => {
+    setSelectedFile(null);
+  }, []);
+
   return (
     <div className="uploadModule">
       <div className="pageContainer">
@@ -164,9 +168,6 @@ const UploadFile = () => {
               />
             </div>
             <div className="selected-file"></div>
-            {uploadStatus === "success" && (
-              <p className="success-message">Upload successful!</p>
-            )}
           </div>
 
           <div className="uploadedList">
