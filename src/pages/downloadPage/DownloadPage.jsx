@@ -6,7 +6,7 @@ import downloaded from "../../images/downloaded.png";
 const DownloadPage = () => {
   const { fileId } = useParams();
   const token = localStorage.getItem('token');
-  const fileUrl = `http://localhost:4040/seesvee/download/${fileId}`;
+  const fileUrl = `http://localhost:3000/seesvee/download/${fileId}`;
 
   const triggerDownload = async (token, fileUrl) => {
     try {

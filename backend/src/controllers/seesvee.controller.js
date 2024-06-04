@@ -180,7 +180,6 @@ const createCheckoutSession = async (req, res) => {
 
     res.status(200).json({ success: true, token, session });
   } catch (error) {
-    console.error("Error:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 };
@@ -207,7 +206,6 @@ const download = async (req, res) => {
       zipPath,
     });
   } catch (error) {
-    console.error("Download error:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 };

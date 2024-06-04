@@ -1,6 +1,27 @@
 const express = require('express');
 const path = require('path');
+const session = require("express-session");
+const seesveeRoute = require("./backend/src/routes/seesvee.route.js");
 const app = express();
+const cors = require('cors');
+const dotenv = require("dotenv");
+dotenv.config();
+require("./backend/src/config/db.connection.js");
+
+app.use(cors("*"));
+app.use(
+  session({
+    secret: process.env.STRIPE_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use("/seesvee", seesveeRoute);
 
 // Serve static files from the React app and more!
 app.use(express.static(path.join(__dirname, 'build')));

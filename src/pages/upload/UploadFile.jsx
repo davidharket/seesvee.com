@@ -57,7 +57,7 @@ const UploadFile = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      fetch("http://localhost:4040/seesvee/upload", {
+      fetch("http://localhost:3000/seesvee/upload", {
         method: "POST",
         body: formData,
       })
@@ -101,7 +101,7 @@ const UploadFile = () => {
   const handleCheckOutPayment = async (fileId) => {
     try {
       const response = await fetch(
-        `http://localhost:4040/seesvee/create-checkout-session/${fileId}`,
+        `http://localhost:3000/seesvee/create-checkout-session/${fileId}`,
         {
           method: "POST",
           headers: {
