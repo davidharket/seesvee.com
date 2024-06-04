@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          submodules: true  # Ensure submodules are initialized and updated
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.7.0
@@ -30,6 +32,7 @@ jobs:
           git config --global --add safe.directory /var/www/seesvee &&
           cd /var/www/seesvee &&
           git pull &&
+          git submodule update --init --recursive &&  # Ensure submodules are updated
           npm install &&
           npm run build &&
           pm2 stop seesvee-backend || true &&
