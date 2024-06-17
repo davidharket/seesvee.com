@@ -1,87 +1,88 @@
 import React, { useState, useEffect } from "react";
-import "./uplaodFile.scss";
 import download from "../../images/download.png";
 import downloaded from "../../images/downloaded.png";
-import { useElements, useStripe } from "@stripe/react-stripe-js";
-
+import "./uplaodFile.scss";
 const UploadFile = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadStatus, setUploadStatus] = useState("idle");
-  const [fileSize, setFileSize] = useState(0);
-  const [rowCount, setRowCount] = useState(0);
-  const [error, setError] = useState("");
+  const [fileData, setFileData] = useState({
+    selectedFile: null,
+    uploadStatus: "idle",
+    fileSize: 0,
+    rowCount: 0,
+    error: "",
+    chunks: 5,
+    getId: "",
+    fileName: "",
+  });
   const [showChunksInput, setShowChunksInput] = useState(false);
-  const [chunks, setChunks] = useState(5);
-  const [getId, setGetId] = useState("");
 
   useEffect(() => {
-    const storedFile = localStorage.getItem("selectedFile");
-    const storedFileSize = localStorage.getItem("fileSize");
-    const storedRowCount = localStorage.getItem("rowCount");
-    const storedUploadStatus = localStorage.getItem("uploadStatus");
-    const storedId = localStorage.getItem("_id");
-    if (
-      storedFile &&
-      storedFileSize &&
-      storedRowCount &&
-      storedUploadStatus &&
-      storedId
-    ) {
-      setSelectedFile(JSON.parse(storedFile));
-      setFileSize(parseInt(storedFileSize));
-      setRowCount(parseInt(storedRowCount));
-      setUploadStatus(storedUploadStatus);
-      setGetId(storedId);
+    const storedData = {
+      selectedFile: JSON.parse(localStorage.getItem("selectedFile")),
+      fileSize: localStorage.getItem("fileSize"),
+      rowCount: localStorage.getItem("rowCount"),
+      uploadStatus: localStorage.getItem("uploadStatus"),
+      getId: localStorage.getItem("_id"),
+      fileName: localStorage.getItem("fileName"),
+    };
+
+    if (storedData.selectedFile) {
+      setFileData({
+        ...fileData,
+        ...storedData,
+      });
     }
   }, []);
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      const fileType = file.type;
+      const fileExtension = file.name.split(".").pop().toLowerCase();
       if (
-        file.type !== "text/csv" &&
-        file.name.split(".").pop().toLowerCase() !== "csv"
+        fileType !== "text/csv" &&
+        fileExtension !== "csv" &&
+        fileType !==
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+        fileExtension !== "xlsx"
       ) {
-        setError("Not a Valid CSV file");
-        setSelectedFile(null);
-        setFileSize(0);
-        setRowCount(0);
+        setFileData({ ...fileData, error: "Not a Valid CSV file" });
         event.target.value = null;
         return;
-      } else {
-        setError("");
       }
-      setSelectedFile(file);
-      setFileSize(file.size);
 
       const formData = new FormData();
       formData.append("file", file);
 
-      fetch("http://localhost:3000/seesvee/upload", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            const uploadFile = data.uploadFile;
-            setRowCount(uploadFile.rowCount);
-            setFileSize(uploadFile.fileSize);
-            setUploadStatus("success");
-            setGetId(uploadFile._id);
-            localStorage.setItem("selectedFile", JSON.stringify(file));
-            localStorage.setItem("fileSize", uploadFile.fileSize);
-            localStorage.setItem("rowCount", uploadFile.rowCount);
-            localStorage.setItem("_id", uploadFile._id);
-            localStorage.setItem("uploadStatus", "success");
-          } else {
-            setError(data.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          setError("Failed to upload file");
+      try {
+        const response = await fetch("http://localhost:3000/seesvee/upload", {
+          method: "POST",
+          body: formData,
         });
+        const data = await response.json();
+        if (data.success) {
+          const uploadFile = data.uploadFile;
+          setFileData({
+            ...fileData,
+            selectedFile: file,
+            rowCount: uploadFile.rowCount,
+            fileSize: uploadFile.fileSize,
+            fileName: uploadFile.fileName,
+            uploadStatus: "success",
+            getId: uploadFile._id,
+          });
+          localStorage.setItem("selectedFile", JSON.stringify(file));
+          localStorage.setItem("fileSize", uploadFile.fileSize);
+          localStorage.setItem("rowCount", uploadFile.rowCount);
+          localStorage.setItem("_id", uploadFile._id);
+          localStorage.setItem("fileName", uploadFile.fileName);
+          localStorage.setItem("uploadStatus", "success");
+        } else {
+          setFileData({ ...fileData, error: data.message });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setFileData({ ...fileData, error: "Failed to upload file" });
+      }
     }
   };
 
@@ -94,22 +95,19 @@ const UploadFile = () => {
       return `${size} bytes`;
     }
   };
-  const handleCutItUpClick = async (id) => {
+
+  const handleCutItUpClick = () => {
     setShowChunksInput(true);
   };
 
-  const handleCheckOutPayment = async (fileId) => {
+  const handleCheckOutPayment = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/seesvee/create-checkout-session/${fileId}`,
+        `http://localhost:3000/seesvee/create-checkout-session/${fileData.getId}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chunks,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chunks: fileData.chunks }),
         }
       );
       const data = await response.json();
@@ -124,9 +122,8 @@ const UploadFile = () => {
     }
   };
 
-  useEffect(() => {
-    setSelectedFile(null);
-  }, []);
+  const { selectedFile, rowCount, fileSize, error, chunks, fileName } =
+    fileData;
 
   return (
     <div className="uploadModule">
@@ -142,9 +139,9 @@ const UploadFile = () => {
                     alt="download"
                   />
                   <h2 className="uploadBox__inner-title">
-                    Click to upload you .CSV file
+                    Click to upload your .CSV file
                   </h2>
-                  <p>Or drag and drop! </p>
+                  <p>Or drag and drop!</p>
                 </>
               ) : (
                 <>
@@ -153,19 +150,10 @@ const UploadFile = () => {
                     alt="downloaded"
                     className="uploadBox__inner-img"
                   />
-
-                  <h2 className="uploadBox__inner-title">
-                    {selectedFile.name}
-                  </h2>
+                  <h2 className="uploadBox__inner-title">{fileName}</h2>
                 </>
               )}
-
-              <input
-                type="file"
-                id="file-upload"
-                //   className="hidden"
-                onChange={handleFileUpload}
-              />
+              <input type="file" id="file-upload" onChange={handleFileUpload} />
             </div>
             <div className="selected-file"></div>
           </div>
@@ -185,15 +173,17 @@ const UploadFile = () => {
                           name="chunks"
                           min="1"
                           value={chunks}
-                          onChange={(e) => setChunks(e.target.value)}
+                          onChange={(e) =>
+                            setFileData({ ...fileData, chunks: e.target.value })
+                          }
                         />
                       </div>
-                      <p>≈ 2.000 per file</p>
+                      <p>≈ 2,000 per file</p>
                     </div>
                     <div className="uploadedList__btn">
                       <button
                         className="btnGreen"
-                        onClick={() => handleCheckOutPayment(getId)}
+                        onClick={handleCheckOutPayment}
                       >
                         Download!
                       </button>
@@ -210,10 +200,7 @@ const UploadFile = () => {
                       </p>
                     </div>
                     <div className="uploadedList__btn">
-                      <button
-                        className="btnGreen"
-                        onClick={() => handleCutItUpClick(getId)}
-                      >
+                      <button className="btnGreen" onClick={handleCutItUpClick}>
                         Cut it up!
                       </button>
                     </div>

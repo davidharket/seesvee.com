@@ -1,21 +1,31 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./navbar.scss";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes("download")) {
+      setOpen(false);
+    }
+  }, [location.pathname]);
+
   return (
-    <div className={open ? "mainHeader avtiveMenu" : "mainHeader"}>
+    <div className={open ? "mainHeader activeMenu" : "mainHeader"}>
       <div className="pageContainer">
         <div className="mainHeader__inner">
           <Link to="/" className="mainHeader__logo">
             .seesvee
           </Link>
-          <div className="mainHeader__menu">
-            <Link to={"/"}>Home</Link>
-            <Link to={"#"}>Why</Link>
-            <Link to={"#"}>Split_it</Link>
-          </div>
+          {location.pathname.includes("download") ? null : (
+            <div className="mainHeader__menu">
+              <Link to={"/"}>Home</Link>
+              <Link to={"#"}>Why</Link>
+              <Link to={"#"}>Split_it</Link>
+            </div>
+          )}
           <div onClick={() => setOpen(!open)} className="mainHeader__menuBtn">
             {!open ? (
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

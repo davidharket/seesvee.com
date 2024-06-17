@@ -15,13 +15,10 @@ const DownloadPage = () => {
           "authorization": token
         },
       });
-      const responseFile = await response.json()
-      if (!responseFile.success) {
+      if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const zipUrl = responseFile.zipPath; 
-      const blobResponse = await fetch(zipUrl); 
-      const blob = await blobResponse.blob(); 
+      const blob = await response.blob();
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       link.download = "chunks.zip";
@@ -32,7 +29,6 @@ const DownloadPage = () => {
       console.error(error.message);
     }
   };
-  
 
   useEffect(() => {
     triggerDownload(token, fileUrl);

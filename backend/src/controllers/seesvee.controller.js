@@ -7,20 +7,19 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const stripe = require("stripe");
 const seesveeModel = require("../models/seesvee.model");
+
 dotenv.config();
-const cloudinary = require("../service/config.service");
+
 const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
 
 const upload = async (req, res) => {
   try {
     const file = req.file;
-
     if (!file) {
       return res.status(400).json({ error: "No file uploaded." });
     }
 
     const ext = path.extname(file.originalname).toLowerCase();
-
     if (ext !== ".csv" && ext !== ".xlsx") {
       fs.unlinkSync(file.path);
       return res.status(400).json({
@@ -28,31 +27,45 @@ const upload = async (req, res) => {
       });
     }
 
-    const results = [];
-    fs.createReadStream(file.path)
-      .pipe(csv())
-      .on("data", (data) => results.push(data))
-      .on("end", async () => {
-        const rowCount = results.length;
-        const fileSize = file.size;
-        const uploadFile = new seesveeModel({
-          fileName: file?.originalname,
-          filePath: file.path,
-          rowCount: rowCount.toString(),
-          fileSize: fileSize.toString(),
-        });
-        await uploadFile.save();
+    const uploadDir = path.join(__dirname, "..", "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
 
-        res.status(200).json({
-          success: true,
-          message: "File uploaded successfully",
-          uploadFile,
+    const newFilePath = path.join(uploadDir, file.originalname);
+
+    fs.rename(file.path, newFilePath, async (err) => {
+      if (err) {
+        console.error("Error moving file:", err);
+        return res.status(500).json({ error: "Error processing file." });
+      }
+
+      const results = [];
+      fs.createReadStream(newFilePath)
+        .pipe(csv())
+        .on("data", (data) => results.push(data))
+        .on("end", async () => {
+          const rowCount = results.length;
+          const fileSize = file.size;
+          const uploadFile = new seesveeModel({
+            fileName: file.originalname,
+            filePath: newFilePath,
+            rowCount: rowCount.toString(),
+            fileSize: fileSize.toString(),
+          });
+          await uploadFile.save();
+
+          res.status(200).json({
+            success: true,
+            message: "File uploaded successfully",
+            uploadFile,
+          });
+        })
+        .on("error", (error) => {
+          console.error("Error reading CSV file:", error);
+          res.status(500).json({ error: "Error processing file." });
         });
-      })
-      .on("error", (error) => {
-        console.error("Error reading CSV file:", error);
-        res.status(500).json({ error: "Error processing file." });
-      });
+    });
   } catch (error) {
     console.error("Upload error:", error);
     res.status(500).json({ error: "Internal server error." });
@@ -69,12 +82,17 @@ const splitFile = async (fileInfo, chunks, sessionID) => {
       .on("end", async () => {
         try {
           const zip = archiver("zip");
-          const output = fs.createWriteStream(`uploads/${sessionID}.zip`);
+          const uploadDir = path.join(__dirname, "..", "uploads");
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
+          }
+          const zipPath = path.join(uploadDir, `${sessionID}.zip`);
+          const output = fs.createWriteStream(zipPath);
           output.on("close", () => {
             console.log(
               `ZIP file ${sessionID}.zip has been finalized and the output file descriptor has closed.`
             );
-            resolve(`uploads/${sessionID}.zip`);
+            resolve(zipPath);
           });
           output.on("end", () => {
             console.log("Data has been drained");
@@ -96,7 +114,6 @@ const splitFile = async (fileInfo, chunks, sessionID) => {
           zip.pipe(output);
 
           const fields = results.length > 0 ? Object.keys(results[0]) : [];
-
           for (let i = 0; i < chunks; i++) {
             const chunkData = results.slice(i * chunkSize, (i + 1) * chunkSize);
             const csvData = json2csv(chunkData, { fields });
@@ -136,19 +153,13 @@ const createCheckoutSession = async (req, res) => {
     }
 
     const fileInfo = await seesveeModel.findById(fileId);
-
     if (!fileInfo) {
       return res.status(400).json({ error: "File not found." });
     }
 
     const zipPath = await splitFile(fileInfo, chunks, req.sessionID);
 
-    const result = await cloudinary.uploader.upload(zipPath, {
-      resource_type: "raw",
-      public_id: `split_files/${req.sessionID}`,
-    });
-
-    fileInfo.downloadUrl = result.secure_url;
+    fileInfo.downloadUrl = zipPath;
     await fileInfo.save();
 
     const session = await stripeInstance.checkout.sessions.create({
@@ -187,23 +198,34 @@ const createCheckoutSession = async (req, res) => {
 const download = async (req, res) => {
   try {
     const session_id = req.stripeSessionID;
-    let { fileId } = req.params;
+    const { fileId } = req.params;
     if (!fileId) {
       return res.status(400).json({
         success: false,
         message: "Please enter a fileId.",
       });
     }
+
     const fileInfo = await seesveeModel.findById(fileId);
-    if (fileInfo.stripeId !== session_id || !fileInfo.filePath) {
+    if (fileInfo.stripeId !== session_id || !fileInfo.downloadUrl) {
       return res
         .status(400)
         .json({ error: "Invalid session or file not found." });
     }
+
     const zipPath = fileInfo.downloadUrl;
-    return res.status(200).json({
-      success: true,
-      zipPath,
+    if (!fs.existsSync(zipPath)) {
+      return res.status(404).json({ error: "File not found." });
+    }
+
+    res.setHeader('Content-Disposition', `attachment; filename=chunks_${fileId}.zip`);
+    res.setHeader('Content-Type', 'application/zip');
+
+    const fileStream = fs.createReadStream(zipPath);
+    fileStream.pipe(res);
+    fileStream.on('error', (err) => {
+      console.error("Error during file streaming:", err);
+      res.status(500).json({ error: "Error streaming file." });
     });
   } catch (error) {
     res.status(500).json({ error: "Internal server error." });

@@ -2,11 +2,12 @@
   "name": "seesvee",
   "version": "1.0.0",
   "main": "server.js",
-  "scripts": {
-    "start": "nodemon server.js",
-    "build": "react-scripts build",
-    "react-start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start"
-  },
+"scripts": {
+  "start": "concurrently \"npm run react-start\" \"npm run node-start\"",
+  "react-start": "react-scripts start",
+  "node-start": "nodemon server.js",
+  "build": "react-scripts build"
+},
   "dependencies": {
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.1",
@@ -45,5 +46,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:4000"  
 }
